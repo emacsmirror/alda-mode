@@ -137,6 +137,21 @@ This will map ~C-c a~ to play a selected region, and ~gp~ to be an evil
 operator to do the same thing! (~gpp~ will play the current line,
 ~gp20j~ plays 20 lines, etc).
 
+** Using org tables for alda bars (Jarkko Turkulainen)
+
+Reading alda scores can be a little daunting. To try to make it a little easier,
+you can take advantage of ~orgtbl-mode~ to automatically format columns of alda
+code. However, with this method, you lose alda-mode's syntax highlighting, due
+to the face ~orgtbl-mode~ applies. This snippet will remove such syntax
+highlighting, letting you get something more pleasant.
+
+#+BEGIN_SRC emacs-lisp
+  (font-lock-remove-keywords nil orgtbl-extra-font-lock-keywords)
+  (org-restart-font-lock)
+#+END_SRC
+
+[[https://i.imgur.com/tNcu6gK.png]]
+
 ** Contributing
    :PROPERTIES:
    :CUSTOM_ID: contributing
