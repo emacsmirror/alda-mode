@@ -46,7 +46,7 @@
 ;;;; -- Variables --
 (defvar *alda-history*
   ""
-  "Holds the history to be sent to the alda server.
+  "Holds the history to be sent to alda.
 If you are experiencing problems, try clearing your history with 'alda-history-clear'.")
 
 ;;;; -- Region playback functions --
@@ -133,32 +133,19 @@ When set to nil, will not set to repl"
   :type 'boolean
   :group 'Alda)
 
-(defun alda-server ()
-  "Start an alda server in an Emacs process."
-  (interactive)
-  (start-process +alda-output-name+ +alda-output-buffer+ (alda-location)  "server"))
-
 (defun alda-run-cmd (&rest args)
   "Run a given alda command with specified args.
 Argument ARGS a list of arguments to pass to alda"
   (interactive "sEnter alda command: ")
-  (let ((server-down
-          (if (string-match "[Ss]erver [Dd]own" (shell-command-to-string (concat (alda-location) " status")))
-            (progn (message "Alda server down, starting in Emacs.") t)
-            nil)))
-    (if (not (alda-location))
+  (if (not (alda-location))
       (message "Alda was not found on your $PATH and alda-binary-location was nil.")
-      (progn
-        (when server-down
-          (alda-server)
-          (sleep-for 2)) ;; Try to stop a race condition
-        (apply #'start-process +alda-output-name+ +alda-output-buffer+
-          (alda-location) args)))))
+    (apply #'start-process +alda-output-name+ +alda-output-buffer+
+           (alda-location) args)))
 
 (defun alda-play-text (text)
-  "Plays the specified TEXT in the alda server.
+  "Plays the specified TEXT in alda.
 This does include any history you might have added.
-ARGUMENT TEXT The text to play with the current alda server."
+ARGUMENT TEXT The text to play with alda."
   (alda-run-cmd "play" "--history" *alda-history* "--code" text))
 
 (defun alda-stop ()
