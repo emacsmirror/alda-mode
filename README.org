@@ -48,8 +48,9 @@ Please submit any bugs with this feature as issues to this repository.
 CLOSED: [2017-08-03 Thu 18:49]
 
 When playing a region, sometimes you need 'context' for the playback. In alda,
-this is provided as 'history' through the java client, through ~alda play
---history~.
+this used to be provided as 'history' through the java client, through ~alda
+play --history~. Currently (June 2021) alda has dropped support for this
+feature, so ~alda-mode~ tries to emulate it.
 
 # Alda mode org babel hype! (I wish)
 #+BEGIN_SRC alda

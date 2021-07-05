@@ -31,16 +31,16 @@ Note: Mocking this command assumes the alda-run-cmd function is working properly
 (ert-deftest alda-play-text-test ()
   "Tests if alda-play-text is working correctly."
   (with-mock
-    (mock-alda-cmd "play" "--history" "" "--code" "piano: c d e")
-    (alda-play-text "piano: c d e")
+   (mock-alda-cmd "play" "-F" "" "--code" "piano: c d e")
+   (alda-play-text "piano: c d e")
 
-    (mock-alda-cmd "play" "--history" "" "--code" "piano: c d
+   (mock-alda-cmd "play" "-F" "" "--code" "piano: c d
 e f g")
-    (alda-play-text "piano: c d
+   (alda-play-text "piano: c d
 e f g")
 
-    (mock-alda-cmd "play" "--history" "" "--code" "guitar: \"d e f\"")
-    (alda-play-text "guitar: \"d e f\"")))
+   (mock-alda-cmd "play" "-F" "" "--code" "guitar: \"d e f\"")
+   (alda-play-text "guitar: \"d e f\"")))
 
 (ert-deftest alda-play-file-test ()
   "Tests if alda-play-file is working correctly."
@@ -52,9 +52,9 @@ e f g")
 (ert-deftest alda-play-buffer-test ()
   "Tests if alda-play-buffer is working correctly."
   (with-mock
-    (stub buffer-string => "midi-square-wave: c d e")
-    (mock-alda-cmd "play" "--history" "" "--code" "midi-square-wave: c d e")
-    (alda-play-buffer)))
+   (stub buffer-string => "midi-square-wave: c d e")
+   (mock-alda-cmd "play" "-F" "" "--code" "midi-square-wave: c d e")
+   (alda-play-buffer)))
 
 (ert-deftest alda-stop-test ()
   "Tests if alda-stop is working."

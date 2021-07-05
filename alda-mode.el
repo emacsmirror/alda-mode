@@ -39,8 +39,10 @@
 (defconst +alda-output-buffer+ "*alda-output*")
 (defconst +alda-output-name+ "alda-playback")
 (defconst +alda-comment-str+ "#")
+(defconst +alda-marker-name+ "alda-mode-internal-marker")
 
 (require 'comint)
+(require 'subr-x)
 
 ;;; Code:
 ;;;; -- Variables --
@@ -146,7 +148,16 @@ Argument ARGS a list of arguments to pass to alda"
   "Plays the specified TEXT in alda.
 This does include any history you might have added.
 ARGUMENT TEXT The text to play with alda."
-  (alda-run-cmd "play" "--history" *alda-history* "--code" text))
+  (let* ((use-marker (> (length (string-trim *alda-history*)) 0)))
+    (alda-run-cmd "play"
+                  "-F"
+                  (if use-marker +alda-marker-name+ "")
+                  "--code"
+                  (concat
+                   *alda-history*
+                   (when use-marker
+                     (concat "\n%" +alda-marker-name+ "\n"))
+                   text))))
 
 (defun alda-stop ()
   "Stop current alda playback."
