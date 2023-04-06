@@ -224,33 +224,26 @@ Argument START The start of the selection to play from.
 Argument END The end of the selection to play from."
   (interactive "r")
   (if (eq start end)
-    (message "No mark was set!")
+      (message "No mark was set!")
     (if alda-play-region-in-repl
-      (alda-inf-eval-region start end)
+        (alda-inf-eval-region start end)
       (alda-play-text (buffer-substring-no-properties start end)))))
 
 ;; If evil is found, make evil commands as well.
-(eval-when-compile
-  (unless (require 'evil nil 'noerror)
-    ;; Evil must be sourced in order to define this macro
-    (defmacro evil-define-operator (name &rest _)
-      ;; Define a dummy instead if not present.
-      `(defun ,name () (interactive) (message "Evil was not present while compiling alda-mode. Recompile with evil installed!")))))
+(when (and (require 'evil nil 'noerror) (macrop 'evil-define-operator))
+  (evil-define-operator alda-evil-play-region (beg end _type _register _yank-hanlder)
+    "Plays the text from BEG to END."
+    :move-point nil
+    :repeat nil
+    (interactive "<R><x><y>")
+    (alda-play-region beg end))
 
-;; Macro will be expanded based on the above dummy/evil load
-(evil-define-operator alda-evil-play-region (beg end _type _register _yank-hanlder)
-  "Plays the text from BEG to END."
-  :move-point nil
-  :repeat nil
-  (interactive "<R><x><y>")
-  (alda-play-region beg end))
-
-(evil-define-operator alda-evil-history-append-region (beg end _type _register _yank-hanlder)
-  "Appends the text from BEG to END to alda history."
-  :move-point nil
-  :repeat nil
-  (interactive "<R><x><y>")
-  (alda-history-append-region beg end))
+  (evil-define-operator alda-evil-history-append-region (beg end _type _register _yank-hanlder)
+    "Appends the text from BEG to END to alda history."
+    :move-point nil
+    :repeat nil
+    (interactive "<R><x><y>")
+    (alda-history-append-region beg end)))
 
 ;; Renamed stop -> down for consistency
 (defun alda-down ()
