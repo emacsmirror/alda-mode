@@ -2,8 +2,11 @@ stages:
   - test
 
 test:
-  image: jgkamat/emacs:25.2-cask
-  stage: test
+  image: alpine:3.17
+  before_script:
+    - export PATH="/root/.cask/bin:$PATH"
   script:
-    - cask
-    - cask exec ert-runner
+  - apk update && apk add openssh make git curl python3 emacs openssh bash git
+  - git clone https://github.com/cask/cask ~/.cask
+  - cask install
+  - cask exec ert-runner
