@@ -230,20 +230,22 @@ Argument END The end of the selection to play from."
       (alda-play-text (buffer-substring-no-properties start end)))))
 
 ;; If evil is found, make evil commands as well.
-(when (and (require 'evil nil 'noerror) (macrop 'evil-define-operator))
-  (evil-define-operator alda-evil-play-region (beg end _type _register _yank-hanlder)
-    "Plays the text from BEG to END."
-    :move-point nil
-    :repeat nil
-    (interactive "<R><x><y>")
-    (alda-play-region beg end))
+;; Use eval to prevent byte-compilation of these forms, since evil-define-operator
+;; is a macro that won't be available at compile time if evil isn't loaded.
+(with-eval-after-load 'evil
+  (eval '(evil-define-operator alda-evil-play-region (beg end _type _register _yank-hanlder)
+           "Plays the text from BEG to END."
+           :move-point nil
+           :repeat nil
+           (interactive "<R><x><y>")
+           (alda-play-region beg end)))
 
-  (evil-define-operator alda-evil-history-append-region (beg end _type _register _yank-hanlder)
-    "Appends the text from BEG to END to alda history."
-    :move-point nil
-    :repeat nil
-    (interactive "<R><x><y>")
-    (alda-history-append-region beg end)))
+  (eval '(evil-define-operator alda-evil-history-append-region (beg end _type _register _yank-hanlder)
+           "Appends the text from BEG to END to alda history."
+           :move-point nil
+           :repeat nil
+           (interactive "<R><x><y>")
+           (alda-history-append-region beg end))))
 
 ;; Renamed stop -> down for consistency
 (defun alda-down ()
